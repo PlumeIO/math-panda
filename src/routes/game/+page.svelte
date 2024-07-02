@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { AUTO, Game } from 'phaser';
+	import { onDestroy } from 'svelte';
 
 	let player: Phaser.Types.Physics.Arcade.SpriteWithDynamicBody,
 		cursors: Phaser.Types.Input.Keyboard.CursorKeys | undefined;
@@ -24,7 +25,7 @@
 		}
 	};
 
-	new Game(config);
+	const game = new Game(config);
 
 	function preload(this: Phaser.Scene) {
 		this.load.spritesheet('dude', 'assets/dude.png', { frameWidth: 32, frameHeight: 48 });
@@ -40,7 +41,8 @@
 		cursors = this.input.keyboard?.createCursorKeys();
 
 		player.setBounce(0.2);
-		player.setCollideWorldBounds(true);
+		player.setScale(1.5);
+		// player.setCollideWorldBounds(true);
 
 		// Add collision between player and platform
 		this.physics.add.collider(player, ground);
@@ -66,7 +68,21 @@
 		});
 	}
 
-	function update() {
+	function update(this: Phaser.Scene) {
+		// Horizontal wrap-around
+		if (player.x < 0) {
+			player.x = this.scale.width;
+		} else if (player.x > this.scale.width) {
+			player.x = 0;
+		}
+
+		// Vertical wrap-around
+		if (player.y < 0) {
+			player.y = this.scale.height;
+		} else if (player.y > this.scale.height) {
+			player.y = 0;
+		}
+
 		if (cursors?.left.isDown) {
 			player.setVelocityX(-160);
 
@@ -85,6 +101,10 @@
 			player.setVelocityY(-330);
 		}
 	}
+
+	onDestroy(() => {
+		game.destroy(true);
+	});
 </script>
 
 <div id="main-scene"></div>
