@@ -18,7 +18,7 @@
 		physics: {
 			default: 'arcade',
 			arcade: {
-				gravity: { y: 500, x: 0 },
+				gravity: { y: 980, x: 0 },
 				debug: false
 			}
 		}
