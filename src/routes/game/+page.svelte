@@ -26,6 +26,13 @@
 	};
 
 	const game = new Game(config);
+	let isOnVine = false;
+
+	const onVine: Phaser.Types.Physics.Arcade.ArcadePhysicsCallback = () => {
+		isOnVine = true;
+		player.body.allowGravity = false;
+		player.setVelocityY(0); // Stop any falling motion
+	};
 
 	function preload(this: Phaser.Scene) {
 		this.load.spritesheet('dude', 'assets/dude.png', { frameWidth: 32, frameHeight: 48 });
@@ -37,6 +44,9 @@
 			.setOrigin(0, 0);
 		this.physics.add.existing(ground, true);
 
+		const vine = this.add.rectangle(500, 0, 25, 500, 0x00ff22).setOrigin(0, 0);
+		this.physics.add.existing(vine, true);
+
 		player = this.physics.add.sprite(100, 450, 'dude');
 		cursors = this.input.keyboard?.createCursorKeys();
 
@@ -46,6 +56,7 @@
 
 		// Add collision between player and platform
 		this.physics.add.collider(player, ground);
+		this.physics.add.overlap(player, vine, onVine, undefined, this);
 
 		this.anims.create({
 			key: 'left',
@@ -98,8 +109,26 @@
 		}
 
 		if (cursors?.up.isDown && player.body.touching.down) {
-			player.setVelocityY(-330);
+			player.setVelocityY(-450);
 		}
+
+		if (isOnVine) {
+			if (cursors?.up.isDown) {
+				player.setVelocityY(-160);
+			} else if (cursors?.down.isDown) {
+				player.setVelocityY(160);
+			} else {
+				player.setVelocityY(0);
+			}
+
+			if (!cursors?.up.isDown && !cursors?.down.isDown) {
+				player.setVelocityY(0);
+			}
+		} else {
+			player.body.allowGravity = true;
+		}
+
+		isOnVine = false; // Reset the onLadder flag every frame
 	}
 
 	onDestroy(() => {
