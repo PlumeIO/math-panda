@@ -1,9 +1,35 @@
-export const createGround = (scene: Phaser.Scene) => {
-	const ground = scene.add
-		.rectangle(0, Number(scene.scale.height) - 50, Number(scene.scale.width), 50, 0xffffff)
-		.setOrigin(0, 0);
+const unit = 32;
 
-	return ground;
+export const createPlatforms = (scene: Phaser.Scene) => {
+	const { width, height } = scene.scale;
+	const uw = width / unit;
+	const uh = height / unit;
+	const platforms = scene.physics.add.staticGroup();
+
+	const createPlatform = (
+		x: number,
+		y: number,
+		width: number,
+		height: number,
+		key: string | undefined = undefined
+	) => platforms.create(x, y, key).setOrigin(0, 0).setDisplaySize(width, height).refreshBody();
+
+	// left side platforms
+	createPlatform(uw, 14 * uh, 2 * uw, uh);
+	createPlatform(uw, 21 * uh, 2 * uw, uh);
+	createPlatform(7 * uw, 21 * uh, 2 * uw, uh);
+	createPlatform(3 * uw, 28 * uh, 4 * uw, uh);
+
+	// right side platforms
+	createPlatform(29 * uw, 14 * uh, 2 * uw, uh);
+	createPlatform(29 * uw, 21 * uh, 2 * uw, uh);
+	createPlatform(23 * uw, 21 * uh, 2 * uw, uh);
+	createPlatform(25 * uw, 28 * uh, 4 * uw, uh);
+
+	// center platforms
+	createPlatform(9 * uw, 28 * uh, 14 * uw, uh);
+
+	return platforms;
 };
 
 export const createBamboos = (scene: Phaser.Scene) => {
@@ -22,8 +48,9 @@ export const createPlayer = (
 ) => {
 	const player = scene.physics.add.sprite(x, y, key, frame);
 
+	// player.setCollideWorldBounds(true);
 	player.setBounce(0.2);
-	player.setScale(1.5);
+	player.setScale(1.2);
 
 	return player;
 };
@@ -70,14 +97,19 @@ export const handleWorldWrap = (
 };
 
 export const handlePlayerMovement = (
+	scene: Phaser.Scene,
 	player: Phaser.Types.Physics.Arcade.SpriteWithDynamicBody,
 	cursors: Phaser.Types.Input.Keyboard.CursorKeys | undefined
 ) => {
+	const { width, height } = scene.scale;
+	const uw = width / unit;
+	const uh = height / unit;
+
 	if (cursors?.left.isDown) {
-		player.setVelocityX(-160);
+		player.setVelocityX(-uw * 4);
 		player.anims.play('left', true);
 	} else if (cursors?.right.isDown) {
-		player.setVelocityX(160);
+		player.setVelocityX(uw * 4);
 		player.anims.play('right', true);
 	} else {
 		player.setVelocityX(0);
@@ -85,7 +117,7 @@ export const handlePlayerMovement = (
 	}
 
 	if (cursors?.up.isDown && player.body.touching.down) {
-		player.setVelocityY(-450);
+		player.setVelocityY(-uh * 16);
 	}
 };
 

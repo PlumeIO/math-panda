@@ -3,7 +3,7 @@
 	import { onDestroy } from 'svelte';
 	import {
 		createBamboos,
-		createGround,
+		createPlatforms,
 		createPlayer,
 		handlePlayerMovement,
 		handlePlayerMovementonBamboo,
@@ -48,25 +48,24 @@
 	}
 
 	function create(this: Phaser.Scene) {
-		player = createPlayer(this, 100, 450, 'dude');
+		player = createPlayer(this, 500, 500, 'dude');
 		cursors = this.input.keyboard?.createCursorKeys();
 
-		const ground = createGround(this);
-		this.physics.add.existing(ground, true);
+		const platforms = createPlatforms(this);
 
-		const bamboos = createBamboos(this);
-		this.physics.add.existing(bamboos, true);
+		// const bamboos = createBamboos(this);
+		// this.physics.add.existing(bamboos, true);
 
 		// Add collision between player and platforms
-		this.physics.add.collider(player, ground);
-		this.physics.add.overlap(player, bamboos, onBamboo, undefined, this);
+		this.physics.add.collider(player, platforms);
+		// this.physics.add.overlap(player, bamboos, onBamboo, undefined, this);
 
 		initPlayerAnimations(this, 'dude');
 	}
 
 	function update(this: Phaser.Scene) {
 		handleWorldWrap(this, player);
-		handlePlayerMovement(player, cursors);
+		handlePlayerMovement(this, player, cursors);
 
 		if (playerIsOnBamboo) {
 			handlePlayerMovementonBamboo(player, cursors);
