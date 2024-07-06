@@ -33,9 +33,30 @@ export const createPlatforms = (scene: Phaser.Scene) => {
 };
 
 export const createBamboos = (scene: Phaser.Scene) => {
-	const bamboos = scene.add
-		.rectangle(500, scene.scale.height - 550, 25, 500, 0x00ff22)
-		.setOrigin(0, 0);
+	const { width, height } = scene.scale;
+	const uw = width / unit;
+	const uh = height / unit;
+	const bamboos = scene.physics.add.staticGroup();
+
+	const createBamboo = (
+		x: number,
+		y: number,
+		width: number,
+		height: number,
+		key: string | undefined = undefined
+	) => bamboos.create(x, y, key).setOrigin(0, 0).setDisplaySize(width, height).refreshBody();
+
+	createBamboo(4.25 * uw, 7 * uh, uw / 4, 21 * uh);
+	createBamboo(5.5 * uw, 14 * uh, uw / 4, 14 * uh);
+
+	createBamboo(10.25 * uw, 7 * uh, uw / 4, 21 * uh);
+	createBamboo(11.5 * uw, 14 * uh, uw / 4, 14 * uh);
+
+	createBamboo(21.5 * uw, 7 * uh, uw / 4, 21 * uh);
+	createBamboo(20.25 * uw, 14 * uh, uw / 4, 14 * uh);
+
+	createBamboo(27.5 * uw, 7 * uh, uw / 4, 21 * uh);
+	createBamboo(26.25 * uw, 14 * uh, uw / 4, 14 * uh);
 	return bamboos;
 };
 

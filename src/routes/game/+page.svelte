@@ -53,12 +53,11 @@
 
 		const platforms = createPlatforms(this);
 
-		// const bamboos = createBamboos(this);
-		// this.physics.add.existing(bamboos, true);
+		const bamboos = createBamboos(this);
 
 		// Add collision between player and platforms
 		this.physics.add.collider(player, platforms);
-		// this.physics.add.overlap(player, bamboos, onBamboo, undefined, this);
+		this.physics.add.overlap(player, bamboos, onBamboo, undefined, this);
 
 		initPlayerAnimations(this, 'dude');
 	}
