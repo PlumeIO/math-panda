@@ -15,18 +15,22 @@ export const createPlatforms = (scene: Phaser.Scene) => {
 	) => platforms.create(x, y, key).setOrigin(0, 0).setDisplaySize(width, height).refreshBody();
 
 	// left side platforms
+	createPlatform(0, 7 * uh, 2 * uw, uh);
 	createPlatform(uw, 14 * uh, 2 * uw, uh);
 	createPlatform(uw, 21 * uh, 2 * uw, uh);
-	createPlatform(7 * uw, 21 * uh, 2 * uw, uh);
+	createPlatform(7 * uw, 17.5 * uh, 2 * uw, uh);
 	createPlatform(3 * uw, 28 * uh, 4 * uw, uh);
 
 	// right side platforms
+	createPlatform(30 * uw, 7 * uh, 2 * uw, uh);
 	createPlatform(29 * uw, 14 * uh, 2 * uw, uh);
 	createPlatform(29 * uw, 21 * uh, 2 * uw, uh);
-	createPlatform(23 * uw, 21 * uh, 2 * uw, uh);
+	createPlatform(23 * uw, 17.5 * uh, 2 * uw, uh);
 	createPlatform(25 * uw, 28 * uh, 4 * uw, uh);
 
 	// center platforms
+	createPlatform(13 * uw, 21 * uh, 2 * uw, uh);
+	createPlatform(17 * uw, 21 * uh, 2 * uw, uh);
 	createPlatform(9 * uw, 28 * uh, 14 * uw, uh);
 
 	return platforms;

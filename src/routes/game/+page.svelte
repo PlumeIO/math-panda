@@ -10,6 +10,7 @@
 		handleWorldWrap,
 		initPlayerAnimations
 	} from './helpers';
+	import MenuButton from '$lib/components/pause-button.svelte';
 
 	let player: Phaser.Types.Physics.Arcade.SpriteWithDynamicBody,
 		cursors: Phaser.Types.Input.Keyboard.CursorKeys | undefined;
@@ -80,4 +81,5 @@
 	});
 </script>
 
+<MenuButton />
 <div id="main-scene"></div>
