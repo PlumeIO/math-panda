@@ -74,8 +74,25 @@ export const createBamboos = (scene: Phaser.Scene) => {
 	createBamboo(55, 4.5, undefined, 27, 'bamboo-lg');
 	createBamboo(52, 13.5, undefined, 18, 'bamboo');
 
+	appendNumbersOnBamboos(scene, [8, 20, 43, 55], [5.75, 9.25, 12.75, 16.25, 19.75, 23.25, 26.75]);
+
 	return bamboos;
 };
+
+function appendNumbersOnBamboos(scene: Phaser.Scene, bamboosXPos: number[], numbersYPos: number[]) {
+	const { width, height } = scene.scale;
+	const uw = width / unitX;
+	const uh = height / unitY;
+
+	bamboosXPos.forEach((x) => {
+		x *= uw;
+		numbersYPos.forEach((y) => {
+			y *= uh;
+			scene.add.ellipse(x + uw / 2, y + uh / 2, 1.5 * uw, 1.5 * uh, 0x3d6e70);
+			scene.add.text(x + uw / 5, y, String(Math.floor(Math.random() * 9) + 1));
+		});
+	});
+}
 
 export const createPlayer = (
 	scene: Phaser.Scene,
