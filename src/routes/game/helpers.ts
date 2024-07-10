@@ -1,66 +1,79 @@
-const unit = 32;
+const unitX = 64;
+const unitY = 36;
 
 export const createPlatforms = (scene: Phaser.Scene) => {
 	const { width, height } = scene.scale;
-	const uw = width / unit;
-	const uh = height / unit;
+	const uw = width / unitX;
+	const uh = height / unitY;
 	const platforms = scene.physics.add.staticGroup();
 
 	const createPlatform = (
 		x: number,
 		y: number,
 		width: number,
-		height: number,
-		key: string | undefined = undefined
-	) => platforms.create(x, y, key).setOrigin(0, 0).setDisplaySize(width, height).refreshBody();
+		height: number = 2,
+		key: string | undefined = 'floating-island'
+	) =>
+		platforms
+			.create(x * uw, y * uh, key)
+			.setOrigin(0, 0)
+			.setDisplaySize(width * uw, height * uh)
+			.refreshBody();
 
-	// left side platforms
-	createPlatform(0, 7 * uh, 2 * uw, uh);
-	createPlatform(uw, 14 * uh, 2 * uw, uh);
-	createPlatform(uw, 21 * uh, 2 * uw, uh);
-	createPlatform(7 * uw, 17.5 * uh, 2 * uw, uh);
-	createPlatform(3 * uw, 28 * uh, 4 * uw, uh);
+	// // left side platforms
+	createPlatform(0, 4.5, 4, 2);
+	createPlatform(2, 13.5, 4, 2);
+	createPlatform(2, 22.5, 4, 2);
+	createPlatform(6, 31.5, 8, 6, 'secondary-island');
+	createPlatform(14, 18, 4, 1);
 
-	// right side platforms
-	createPlatform(30 * uw, 7 * uh, 2 * uw, uh);
-	createPlatform(29 * uw, 14 * uh, 2 * uw, uh);
-	createPlatform(29 * uw, 21 * uh, 2 * uw, uh);
-	createPlatform(23 * uw, 17.5 * uh, 2 * uw, uh);
-	createPlatform(25 * uw, 28 * uh, 4 * uw, uh);
+	// // right side platforms
+	createPlatform(60, 4.5, 4, 2);
+	createPlatform(58, 13.5, 4, 2);
+	createPlatform(58, 22.5, 4, 2);
+	createPlatform(50, 31.5, 8, 6, 'secondary-island');
+	createPlatform(46, 18, 4, 1);
 
-	// center platforms
-	createPlatform(13 * uw, 21 * uh, 2 * uw, uh);
-	createPlatform(17 * uw, 21 * uh, 2 * uw, uh);
-	createPlatform(9 * uw, 28 * uh, 14 * uw, uh);
+	// // center platforms
+	createPlatform(18, 31.5, 28, 6, 'secondary-island');
+	createPlatform(26, 22.5, 4, 1);
+	createPlatform(34, 22.5, 4, 1);
 
 	return platforms;
 };
 
 export const createBamboos = (scene: Phaser.Scene) => {
 	const { width, height } = scene.scale;
-	const uw = width / unit;
-	const uh = height / unit;
+	const uw = width / unitX;
+	const uh = height / unitY;
 	const bamboos = scene.physics.add.staticGroup();
 
 	const createBamboo = (
 		x: number,
 		y: number,
-		width: number,
+		width: number = 1,
 		height: number,
 		key: string | undefined = undefined
-	) => bamboos.create(x, y, key).setOrigin(0, 0).setDisplaySize(width, height).refreshBody();
+	) => {
+		bamboos
+			.create(x * uw, y * uh, key)
+			.setOrigin(0, 0)
+			.setDisplaySize(width * uw, height * uh)
+			.refreshBody();
+	};
 
-	createBamboo(4.25 * uw, 7 * uh, uw / 4, 21 * uh);
-	createBamboo(5.5 * uw, 14 * uh, uw / 4, 14 * uh);
+	createBamboo(8, 4.5, undefined, 27, 'bamboo-lg');
+	createBamboo(11, 13.5, undefined, 18, 'bamboo');
 
-	createBamboo(10.25 * uw, 7 * uh, uw / 4, 21 * uh);
-	createBamboo(11.5 * uw, 14 * uh, uw / 4, 14 * uh);
+	createBamboo(20, 4.5, undefined, 27, 'bamboo-lg');
+	createBamboo(23, 13.5, undefined, 18, 'bamboo');
 
-	createBamboo(21.5 * uw, 7 * uh, uw / 4, 21 * uh);
-	createBamboo(20.25 * uw, 14 * uh, uw / 4, 14 * uh);
+	createBamboo(43, 4.5, undefined, 27, 'bamboo-lg');
+	createBamboo(40, 13.5, undefined, 18, 'bamboo');
 
-	createBamboo(27.5 * uw, 7 * uh, uw / 4, 21 * uh);
-	createBamboo(26.25 * uw, 14 * uh, uw / 4, 14 * uh);
+	createBamboo(55, 4.5, undefined, 27, 'bamboo-lg');
+	createBamboo(52, 13.5, undefined, 18, 'bamboo');
+
 	return bamboos;
 };
 
@@ -71,11 +84,16 @@ export const createPlayer = (
 	key: string,
 	frame?: string | number | undefined
 ) => {
-	const player = scene.physics.add.sprite(x, y, key, frame);
+	const { width, height } = scene.scale;
+	const uw = width / unitX;
+	const uh = height / unitY;
+	const player = scene.physics.add.sprite(x * uw, y * uh, key, frame);
 
 	// player.setCollideWorldBounds(true);
 	player.setBounce(0.2);
-	player.setScale(1.2);
+	player.setDisplaySize(2 * uw, 3 * uh);
+	player.setSize(uw / 3, player.height);
+	player.setOffset(uw / 1.25, 0);
 
 	return player;
 };
@@ -127,14 +145,14 @@ export const handlePlayerMovement = (
 	cursors: Phaser.Types.Input.Keyboard.CursorKeys | undefined
 ) => {
 	const { width, height } = scene.scale;
-	const uw = width / unit;
-	const uh = height / unit;
+	const uw = width / unitX;
+	const uh = height / unitY;
 
 	if (cursors?.left.isDown) {
-		player.setVelocityX(-uw * 4);
+		player.setVelocityX(-uw * 8);
 		player.anims.play('left', true);
 	} else if (cursors?.right.isDown) {
-		player.setVelocityX(uw * 4);
+		player.setVelocityX(uw * 8);
 		player.anims.play('right', true);
 	} else {
 		player.setVelocityX(0);
@@ -142,23 +160,37 @@ export const handlePlayerMovement = (
 	}
 
 	if (cursors?.up.isDown && player.body.touching.down) {
+		// if (cursors?.up.isDown) {
 		player.setVelocityY(-uh * 16);
 	}
 };
 
-export const handlePlayerMovementonBamboo = (
+export const handlePlayerMovementOnBamboo = (
+	scene: Phaser.Scene,
 	player: Phaser.Types.Physics.Arcade.SpriteWithDynamicBody,
-	cursors: Phaser.Types.Input.Keyboard.CursorKeys | undefined
+	cursors: Phaser.Types.Input.Keyboard.CursorKeys | undefined,
+	bamboo: Phaser.Types.Physics.Arcade.GameObjectWithBody
 ) => {
+	const { width, height } = scene.scale;
+	const uw = width / unitX;
+	const uh = height / unitY;
+
+	// Handle vertical movement
 	if (cursors?.up.isDown) {
-		player.setVelocityY(-160);
+		player.setVelocityY(-uh * 8);
 	} else if (cursors?.down.isDown) {
-		player.setVelocityY(160);
+		player.setVelocityY(uh * 8);
 	} else {
 		player.setVelocityY(0);
 	}
 
-	if (!cursors?.up.isDown && !cursors?.down.isDown) {
-		player.setVelocityY(0);
-	}
+	// console.log(bamboo);
+	// // Handle horizontal movement
+	// if (cursors?.left.isDown) {
+	// 	player.setX(bamboo.x - uw);
+	// } else if (cursors?.right.isDown) {
+	// 	player.setX(bamboo.x + uw);
+	// } else {
+	// 	player.setX(bamboo.x + uw / 2);
+	// }
 };

@@ -36,7 +36,7 @@
 		<h3 class="text-lg font-bold text-center">Paused</h3>
 		<div>
 			<a href="/">
-				<button class="btn btn-wide">Back to Home</button>
+				<button class="btn btn-wide btn-neutral">Back to Home</button>
 			</a>
 		</div>
 	</div>
