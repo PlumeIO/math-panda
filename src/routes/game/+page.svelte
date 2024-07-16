@@ -3,6 +3,7 @@
 	import { onDestroy } from 'svelte';
 	import {
 		createBamboos,
+		createNumbers,
 		createPlatforms,
 		createPlayer,
 		handlePlayerMovement,
@@ -57,6 +58,14 @@
 
 		this.load.image('floating-island', 'assets/floating-island.png');
 		this.load.image('secondary-island', 'assets/secondary-island.png');
+		this.load.image('primary-island', 'assets/primary-island.png');
+
+		this.load.image('collector-left', 'assets/collector-left.png');
+
+		this.load.image('oi-plus-0', 'assets/operator-islands/oi-plus-0.png');
+		this.load.image('oi-minus-0', 'assets/operator-islands/oi-minus-0.png');
+		this.load.image('oi-multiply-0', 'assets/operator-islands/oi-multiply-0.png');
+		this.load.image('oi-divide-0', 'assets/operator-islands/oi-divide-0.png');
 	}
 
 	function create(this: Phaser.Scene) {
@@ -71,6 +80,8 @@
 		platforms = createPlatforms(this);
 
 		bamboos = createBamboos(this);
+
+		createNumbers(this);
 
 		// Add collision between player and platforms
 		this.physics.add.collider(player, platforms);
