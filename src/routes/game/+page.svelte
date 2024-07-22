@@ -9,14 +9,16 @@
 		handlePlayerMovement,
 		handlePlayerMovementOnBamboo,
 		handleWorldWrap,
-		initPlayerAnimations
+		initPlayerAnimations,
+		triggerOperator
 	} from './helpers';
 	import MenuButton from '$lib/components/pause-button.svelte';
 
 	let player: Phaser.Types.Physics.Arcade.SpriteWithDynamicBody,
 		cursors: Phaser.Types.Input.Keyboard.CursorKeys | undefined,
 		bamboos: Phaser.Physics.Arcade.StaticGroup,
-		platforms: Phaser.Physics.Arcade.StaticGroup;
+		platforms: Phaser.Physics.Arcade.StaticGroup,
+		operators: Phaser.GameObjects.GameObject[];
 
 	const { innerWidth: width, innerHeight: height } = window;
 
@@ -49,6 +51,13 @@
 		player.setVelocityY(0); // Stop any falling motion
 	};
 
+	const onPlatformCollide: Phaser.Types.Physics.Arcade.ArcadePhysicsCallback = (_, platform) => {
+		// @ts-ignore
+		if (platform.name.includes('oi') && platform.texture.key.includes('0'))
+			operators.forEach((operator) => triggerOperator(operator, 'off'));
+		triggerOperator(platform as Phaser.Types.Physics.Arcade.GameObjectWithBody, 'on');
+	};
+
 	function preload(this: Phaser.Scene) {
 		this.load.spritesheet('dude', 'assets/dude.png', { frameWidth: 32, frameHeight: 48 });
 		this.load.image('background', 'assets/background.webp');
@@ -66,6 +75,11 @@
 		this.load.image('oi-minus-0', 'assets/operator-islands/oi-minus-0.png');
 		this.load.image('oi-multiply-0', 'assets/operator-islands/oi-multiply-0.png');
 		this.load.image('oi-divide-0', 'assets/operator-islands/oi-divide-0.png');
+
+		this.load.image('oi-plus-1', 'assets/operator-islands/oi-plus-1.png');
+		this.load.image('oi-minus-1', 'assets/operator-islands/oi-minus-1.png');
+		this.load.image('oi-multiply-1', 'assets/operator-islands/oi-multiply-1.png');
+		this.load.image('oi-divide-1', 'assets/operator-islands/oi-divide-1.png');
 	}
 
 	function create(this: Phaser.Scene) {
@@ -78,13 +92,14 @@
 		cursors = this.input.keyboard?.createCursorKeys();
 
 		platforms = createPlatforms(this);
+		operators = platforms.children.getArray().filter((child) => child.name.includes('oi'));
 
 		bamboos = createBamboos(this);
 
 		createNumbers(this);
 
 		// Add collision between player and platforms
-		this.physics.add.collider(player, platforms);
+		this.physics.add.collider(player, platforms, onPlatformCollide, undefined, this);
 		this.physics.add.overlap(player, bamboos, onBambooCollide, undefined, this);
 
 		initPlayerAnimations(this, 'dude');

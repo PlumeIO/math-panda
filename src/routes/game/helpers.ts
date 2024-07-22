@@ -10,14 +10,14 @@ export const createPlatforms = (scene: Phaser.Scene) => {
 	const platformData = [
 		// left side platforms
 		{ x: 0, y: 4.5, width: 4, key: 'collector-left' },
-		{ x: 2, y: 13.5, width: 4, key: 'oi-plus-0' },
-		{ x: 2, y: 22.5, width: 4, key: 'oi-multiply-0' },
+		{ x: 2, y: 13.5, width: 4, key: 'oi-plus-0', name: 'oi-plus' },
+		{ x: 2, y: 22.5, width: 4, key: 'oi-multiply-0', name: 'oi-multiply' },
 		{ x: 6, y: 31.5, width: 8, height: 6, key: 'secondary-island' },
 		{ x: 14, y: 18, width: 4, height: 1 },
 		// right side platforms
 		{ x: 60, y: 4.5, width: 4 },
-		{ x: 58, y: 13.5, width: 4, key: 'oi-minus-0' },
-		{ x: 58, y: 22.5, width: 4, key: 'oi-divide-0' },
+		{ x: 58, y: 13.5, width: 4, key: 'oi-minus-0', name: 'oi-minus' },
+		{ x: 58, y: 22.5, width: 4, key: 'oi-divide-0', name: 'oi-divide' },
 		{ x: 50, y: 31.5, width: 8, height: 6, key: 'secondary-island' },
 		{ x: 46, y: 18, width: 4, height: 1 },
 		// center platforms
@@ -26,12 +26,20 @@ export const createPlatforms = (scene: Phaser.Scene) => {
 		{ x: 18, y: 31.5, width: 28, height: 6, key: 'primary-island' }
 	];
 
-	platformData.forEach(({ x, y, width, height = 2, key = 'floating-island' }) =>
-		platforms
-			.create(x * uw, y * uh, key)
-			.setOrigin(0, 0)
-			.setDisplaySize(width * uw, height * uh)
-			.refreshBody()
+	platformData.forEach(
+		({ x, y, width, height = 2, key = 'floating-island', name = 'platform' }) => {
+			const platform = platforms
+				.create(x * uw, y * uh, key)
+				.setName(name)
+				.setOrigin(0, 0)
+				.setDisplaySize(width * uw, height * uh)
+				.refreshBody();
+
+			if (name.includes('oi')) {
+				console.log(platform);
+				platform.setBodySize(width * uw, 1.5 * uh);
+			}
+		}
 	);
 
 	return platforms;
@@ -191,14 +199,16 @@ export const handlePlayerMovementOnBamboo = (
 	} else {
 		player.setVelocityY(0);
 	}
+};
 
-	// console.log(bamboo);
-	// // Handle horizontal movement
-	// if (cursors?.left.isDown) {
-	// 	player.setX(bamboo.x - uw);
-	// } else if (cursors?.right.isDown) {
-	// 	player.setX(bamboo.x + uw);
-	// } else {
-	// 	player.setX(bamboo.x + uw / 2);
-	// }
+export const triggerOperator = (
+	operator: Phaser.GameObjects.GameObject,
+	state: 'on' | 'off' | undefined = undefined
+) => {
+	// @ts-ignore
+	if ((operator.texture.key.includes(0) && state === undefined) || state === 'on')
+		// @ts-ignore
+		operator.setTexture(operator.texture.key.replace('0', '1'));
+	//@ts-ignore
+	else operator.setTexture(operator.texture.key.replace('1', '0'));
 };
