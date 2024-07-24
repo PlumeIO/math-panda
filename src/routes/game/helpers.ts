@@ -1,5 +1,9 @@
 const unitX = 64;
 const unitY = 36;
+export type Operator = 'plus' | 'minus' | 'multiply' | 'divide';
+const picks: [number, Operator | undefined, number] = [0, undefined, 0];
+
+export const setOperator = (operator: Operator | undefined) => (picks[1] = operator);
 
 export const createPlatforms = (scene: Phaser.Scene) => {
 	const { width, height } = scene.scale;
@@ -100,9 +104,19 @@ export const handleNumbers = (
 			player,
 			ellipse,
 			() => {
-				ellipse.destroy();
-				text.destroy();
-				numberSprites = numberSprites.filter((s) => s !== ellipse && s !== text);
+				if (picks[0] === 0 || (picks[1] !== undefined && picks[2] === 0)) {
+					console.log(text.text);
+					if (picks[0] === 0) picks[0] = Number(text.text);
+					else {
+						picks[2] = Number(text.text);
+					}
+
+					console.log(picks);
+					document.dispatchEvent(new Event('evaluate-points'));
+					ellipse.destroy();
+					text.destroy();
+					numberSprites = numberSprites.filter((s) => s !== ellipse && s !== text);
+				}
 			},
 			undefined,
 			scene
@@ -137,6 +151,31 @@ export const handleNumbers = (
 		delay: 24000,
 		callback: spawnNumbers,
 		loop: true
+	});
+};
+
+export const handlePoints = (scene: Phaser.Scene, operators: Phaser.GameObjects.GameObject[]) => {
+	const { width, height } = scene.scale;
+	const uw = width / unitX;
+	const uh = height / unitY;
+
+	const text = scene.add.text(27.75 * uw, 21 * uh, String(picks[0]));
+
+	document.addEventListener('evaluate-points', () => {
+		operators.forEach((operator) => triggerOperator(operator, 'off'));
+		const [no1, operator, no2] = picks;
+		if (operator) {
+			const value = {
+				plus: no1 + no2,
+				minus: no1 - no2,
+				multiply: no1 * no2,
+				divide: no1 / no2
+			}[operator];
+			picks[0] = value;
+			picks[1] = undefined;
+			picks[2] = 0;
+		}
+		text.setText(String(picks[0]));
 	});
 };
 

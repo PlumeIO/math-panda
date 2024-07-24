@@ -10,7 +10,10 @@
 		handlePlayerMovementOnBamboo,
 		handleWorldWrap,
 		initPlayerAnimations,
-		triggerOperator
+		triggerOperator,
+		handlePoints,
+		setOperator,
+		type Operator
 	} from './helpers';
 	import MenuButton from '$lib/components/pause-button.svelte';
 
@@ -53,9 +56,16 @@
 
 	const onPlatformCollide: Phaser.Types.Physics.Arcade.ArcadePhysicsCallback = (_, platform) => {
 		// @ts-ignore
-		if (platform.name.includes('oi') && platform.texture.key.includes('0'))
+		if (platform.name.includes('oi') && platform.texture.key.includes('0')) {
 			operators.forEach((operator) => triggerOperator(operator, 'off'));
-		triggerOperator(platform as Phaser.Types.Physics.Arcade.GameObjectWithBody, 'on');
+			setOperator(
+				(platform as Phaser.Types.Physics.Arcade.GameObjectWithBody).name.replace(
+					'oi-',
+					''
+				) as Operator
+			);
+			triggerOperator(platform as Phaser.Types.Physics.Arcade.GameObjectWithBody, 'on');
+		}
 	};
 
 	function preload(this: Phaser.Scene) {
@@ -97,6 +107,7 @@
 		bamboos = createBamboos(this);
 
 		handleNumbers(this, player);
+		handlePoints(this, operators);
 
 		// Add collision between player and platforms
 		this.physics.add.collider(player, platforms, onPlatformCollide, undefined, this);
