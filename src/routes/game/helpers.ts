@@ -36,7 +36,6 @@ export const createPlatforms = (scene: Phaser.Scene) => {
 				.refreshBody();
 
 			if (name.includes('oi')) {
-				console.log(platform);
 				platform.setBodySize(width * uw, 1.5 * uh);
 			}
 		}
@@ -77,20 +76,68 @@ export const createBamboos = (scene: Phaser.Scene) => {
 	return bamboos;
 };
 
-export const createNumbers = (scene: Phaser.Scene) => {
+export const handleNumbers = (
+	scene: Phaser.Scene,
+	player: Phaser.Types.Physics.Arcade.SpriteWithDynamicBody
+) => {
 	const { width, height } = scene.scale;
 	const uw = width / unitX;
 	const uh = height / unitY;
 
 	const xPos = [8, 20, 43, 55].map((x) => x * uw);
 	const yPos = [5.75, 9.25, 12.75, 16.25, 19.75, 23.25, 26.75].map((y) => y * uh);
+	let numberPos: [number, number][] = [];
+	let numberSprites: Phaser.GameObjects.GameObject[] = [];
 
 	const createNumber = (x: number, y: number) => {
-		scene.add.ellipse(x + uw / 2, y + uh / 2, 1.5 * uw, 1.5 * uh, 0x3d6e70);
-		scene.add.text(x + uw / 5, y, String(Math.floor(Math.random() * 9) + 1));
+		const ellipse = scene.add.ellipse(x + uw / 2, y + uh / 2, 1.5 * uw, 1.5 * uh, 0x3d6e70);
+		const text = scene.add.text(x + uw / 5, y, String(Math.floor(Math.random() * 9) + 1));
+
+		scene.physics.add.existing(ellipse, true);
+		scene.physics.add.existing(text, true);
+
+		scene.physics.add.overlap(
+			player,
+			ellipse,
+			() => {
+				ellipse.destroy();
+				text.destroy();
+				numberSprites = numberSprites.filter((s) => s !== ellipse && s !== text);
+			},
+			undefined,
+			scene
+		);
+
+		numberSprites.push(ellipse, text);
 	};
 
-	xPos.forEach((x) => yPos.forEach((y) => createNumber(x, y)));
+	const random = (arr: any[]) => arr[Math.floor(Math.random() * arr.length)];
+
+	const spawnNumbers = () => {
+		numberSprites.forEach((sprite) => sprite.destroy());
+		numberPos = [];
+		numberSprites = [];
+
+		xPos.forEach((x) => {
+			for (let i = 0; i < 5; i++) {
+				const pos = [x, random(yPos)] as [number, number];
+				if (!numberPos.some((nPos) => nPos[0] === pos[0] && nPos[1] === pos[1])) {
+					createNumber(...pos);
+					numberPos.push(pos);
+				} else i--;
+			}
+		});
+	};
+
+	// Initial spawn
+	spawnNumbers();
+
+	// Schedule respawn every 10 seconds
+	scene.time.addEvent({
+		delay: 24000,
+		callback: spawnNumbers,
+		loop: true
+	});
 };
 
 export const createPlayer = (

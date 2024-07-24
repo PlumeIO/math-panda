@@ -3,7 +3,7 @@
 	import { onDestroy } from 'svelte';
 	import {
 		createBamboos,
-		createNumbers,
+		handleNumbers,
 		createPlatforms,
 		createPlayer,
 		handlePlayerMovement,
@@ -88,7 +88,7 @@
 			.setOrigin(0, 0)
 			.setDisplaySize(this.scale.width, this.scale.height);
 
-		player = createPlayer(this, 5, 5, 'dude');
+		player = createPlayer(this, 16, 16, 'dude');
 		cursors = this.input.keyboard?.createCursorKeys();
 
 		platforms = createPlatforms(this);
@@ -96,7 +96,7 @@
 
 		bamboos = createBamboos(this);
 
-		createNumbers(this);
+		handleNumbers(this, player);
 
 		// Add collision between player and platforms
 		this.physics.add.collider(player, platforms, onPlatformCollide, undefined, this);
