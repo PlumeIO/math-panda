@@ -169,7 +169,7 @@ export const handlePoints = (scene: Phaser.Scene, operators: Phaser.GameObjects.
 				plus: no1 + no2,
 				minus: no1 - no2,
 				multiply: no1 * no2,
-				divide: no1 / no2
+				divide: Math.round(no1 / no2)
 			}[operator];
 			picks[0] = value;
 			picks[1] = undefined;
