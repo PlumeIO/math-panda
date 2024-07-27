@@ -1,4 +1,5 @@
 <script lang="ts">
+	// Import necessary modules and components
 	import { AUTO, Game } from 'phaser';
 	import { onDestroy } from 'svelte';
 	import {
@@ -17,14 +18,17 @@
 	} from './helpers';
 	import MenuButton from '$lib/components/pause-button.svelte';
 
+	// Declare game variables
 	let player: Phaser.Types.Physics.Arcade.SpriteWithDynamicBody,
 		cursors: Phaser.Types.Input.Keyboard.CursorKeys | undefined,
 		bamboos: Phaser.Physics.Arcade.StaticGroup,
 		platforms: Phaser.Physics.Arcade.StaticGroup,
 		operators: Phaser.GameObjects.GameObject[];
 
+	// Get screen dimensions
 	const { innerWidth: width, innerHeight: height } = window;
 
+	// Configure the game
 	const config: Phaser.Types.Core.GameConfig = {
 		type: AUTO,
 		width: (16 * height) / 9 > width ? width : (16 * height) / 9,
@@ -45,16 +49,20 @@
 		}
 	};
 
+	// Initialize the game
 	const game = new Game(config);
 	let bambooInUse: Phaser.Types.Physics.Arcade.GameObjectWithBody | undefined = undefined;
 
+	// Callback for when player collides with bamboo
 	const onBambooCollide: Phaser.Types.Physics.Arcade.ArcadePhysicsCallback = (_, bamboo) => {
 		bambooInUse = bamboo as Phaser.Types.Physics.Arcade.GameObjectWithBody;
 		player.body.allowGravity = false;
 		player.setVelocityY(0); // Stop any falling motion
 	};
 
+	// Callback for when player collides with platform
 	const onPlatformCollide: Phaser.Types.Physics.Arcade.ArcadePhysicsCallback = (_, platform) => {
+		// Handle platform-specific logic
 		// @ts-ignore
 		if (platform.name.includes('oi') && platform.texture.key.includes('0')) {
 			operators.forEach((operator) => triggerOperator(operator, 'off'));
@@ -68,6 +76,7 @@
 		}
 	};
 
+	// Preload game assets
 	function preload(this: Phaser.Scene) {
 		this.load.spritesheet('dude', 'assets/dude.png', { frameWidth: 32, frameHeight: 48 });
 		this.load.image('background', 'assets/background.webp');
@@ -92,12 +101,15 @@
 		this.load.image('oi-divide-1', 'assets/operator-islands/oi-divide-1.png');
 	}
 
+	// Create game scene
 	function create(this: Phaser.Scene) {
+		// Set up the background
 		this.add
 			.image(0, 0, 'background')
 			.setOrigin(0, 0)
 			.setDisplaySize(this.scale.width, this.scale.height);
 
+		// Initialize player, cursors, platforms, and bamboos
 		player = createPlayer(this, 16, 16, 'dude');
 		cursors = this.input.keyboard?.createCursorKeys();
 
@@ -116,6 +128,7 @@
 		initPlayerAnimations(this, 'dude');
 	}
 
+	// Update game state
 	function update(this: Phaser.Scene) {
 		handleWorldWrap(this, player);
 		handlePlayerMovement(this, player, cursors);
@@ -126,13 +139,15 @@
 			player.body.allowGravity = true;
 		}
 
-		bambooInUse = undefined; // Reset the playerIsOnBamboo flag every frame
+		bambooInUse = undefined; // Reset the bambooInUse flag every frame
 	}
 
+	// Clean up on component destruction
 	onDestroy(() => {
 		game.destroy(true);
 	});
 </script>
 
+<!-- Menu button component and main scene container -->
 <MenuButton />
 <div id="main-scene"></div>
