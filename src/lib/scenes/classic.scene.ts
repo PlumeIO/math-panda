@@ -2,12 +2,11 @@ import Player from '$lib/models/player';
 import World from '$lib/models/world';
 import NumberHandler from '$lib/models/number-handler';
 import PointHandler, { type Operator } from '$lib/models/points-handler';
-import { triggerOperator } from '$lib/utils';
+import { playerConstructor, triggerOperator } from '$lib/utils';
 
 export default class ClassicGameScene extends Phaser.Scene {
 	players: Player[] = [];
 	world!: World;
-	cursors!: Phaser.Types.Input.Keyboard.CursorKeys;
 
 	uw: number = 0;
 	uh: number = 0;
@@ -53,10 +52,11 @@ export default class ClassicGameScene extends Phaser.Scene {
 			.setDisplaySize(this.scale.width, this.scale.height);
 
 		this.players.push(
-			new Player(this, 16, 16, 'dude', new PointHandler(this, [27.75, 21]))
-			// new Player(this, 32, 16, 'dude', new PointHandler(this, [35.75, 21]))
+			playerConstructor.player1(this),
+			playerConstructor.player2(this),
+			playerConstructor.player3(this),
+			playerConstructor.player4(this)
 		);
-		this.cursors = this.input.keyboard?.createCursorKeys()!;
 
 		this.world = new World(this);
 		this.world.create();

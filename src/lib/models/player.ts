@@ -2,10 +2,17 @@ import type ClassicGameScene from '$lib/scenes/classic.scene';
 import Phaser from 'phaser';
 import type PointHandler from './points-handler';
 
+type Cursors = {
+	up: Phaser.Input.Keyboard.Key;
+	left: Phaser.Input.Keyboard.Key;
+	down: Phaser.Input.Keyboard.Key;
+	right: Phaser.Input.Keyboard.Key;
+};
+
 export default class Player {
 	scene: ClassicGameScene;
 	sprite: Phaser.Types.Physics.Arcade.SpriteWithDynamicBody;
-	cursors: Phaser.Types.Input.Keyboard.CursorKeys | undefined;
+	cursors: Cursors;
 
 	bambooInUse: Phaser.Types.Physics.Arcade.GameObjectWithBody | undefined = undefined;
 	pointHandler: PointHandler;
@@ -15,7 +22,8 @@ export default class Player {
 		x: number,
 		y: number,
 		key: string,
-		pointHandler: PointHandler
+		pointHandler: PointHandler,
+		cursors: Cursors
 	) {
 		const { uw, uh } = scene;
 
@@ -28,7 +36,7 @@ export default class Player {
 		this.sprite.setDisplaySize(2 * uw, 3 * uh);
 		this.sprite.setSize(uw / 4, this.sprite.height);
 
-		this.cursors = scene.input.keyboard?.createCursorKeys();
+		this.cursors = cursors;
 		this.initAnimations(key);
 	}
 
@@ -69,11 +77,11 @@ export default class Player {
 	}
 
 	handlePlayerMovement = () => {
-		const { cursors, uw, uh } = this.scene;
-		if (cursors?.left.isDown) {
+		const { uw, uh } = this.scene;
+		if (this.cursors?.left.isDown) {
 			this.sprite.setVelocityX(-uw * 8);
 			this.sprite.anims.play('left', true);
-		} else if (cursors?.right.isDown) {
+		} else if (this.cursors?.right.isDown) {
 			this.sprite.setVelocityX(uw * 8);
 			this.sprite.anims.play('right', true);
 		} else {
@@ -81,17 +89,17 @@ export default class Player {
 			this.sprite.anims.play('turn');
 		}
 
-		if (cursors?.up.isDown && this.sprite.body.touching.down) {
+		if (this.cursors?.up.isDown && this.sprite.body.touching.down) {
 			this.sprite.setVelocityY(-uh * 16);
 		}
 	};
 
 	handlePlayerMovementOnBamboo = () => {
-		const { cursors, uh } = this.scene;
+		const { uh } = this.scene;
 		// Handle vertical movement
-		if (cursors?.up.isDown) {
+		if (this.cursors?.up.isDown) {
 			this.sprite.setVelocityY(-uh * 8);
-		} else if (cursors?.down.isDown) {
+		} else if (this.cursors?.down.isDown) {
 			this.sprite.setVelocityY(uh * 8);
 		} else {
 			this.sprite.setVelocityY(0);
