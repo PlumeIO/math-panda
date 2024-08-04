@@ -1,12 +1,14 @@
 import Player from '$lib/models/player';
 import World from '$lib/models/world';
 import NumberHandler from '$lib/models/number-handler';
-import PointHandler, { type Operator } from '$lib/models/points-handler';
+import { type Operator } from '$lib/models/points-handler';
 import { playerConstructor, triggerOperator } from '$lib/utils';
+import { publish, subscribe } from '$lib/events';
 
 export default class ClassicGameScene extends Phaser.Scene {
 	players: Player[] = [];
 	world!: World;
+	targetValue!: Phaser.GameObjects.Text;
 
 	uw: number = 0;
 	uh: number = 0;
@@ -61,6 +63,15 @@ export default class ClassicGameScene extends Phaser.Scene {
 		this.world = new World(this);
 		this.world.create();
 
+		this.targetValue = this.add
+			.text(32 * this.uw, 16 * this.uh, String(Math.round(Math.random() * 99)), {
+				fontStyle: 'bold',
+				fontFamily: 'Sans Serif',
+				fontSize: 16 * 4,
+				color: '#8fde5d'
+			})
+			.setOrigin(0.5, 0.5);
+
 		new NumberHandler(this).handleNumbers();
 
 		this.players.forEach((player) => {
@@ -81,6 +92,10 @@ export default class ClassicGameScene extends Phaser.Scene {
 				this
 			);
 		});
+
+		subscribe('player-interact-with-world', () => {
+			this.eventHandler.onPlayerInteractWithWorld();
+		});
 	};
 
 	// Update game state
@@ -99,6 +114,8 @@ export default class ClassicGameScene extends Phaser.Scene {
 			player.bambooInUse = bamboo as Phaser.Types.Physics.Arcade.GameObjectWithBody;
 			player.sprite.body.allowGravity = false;
 			player.sprite.setVelocityY(0); // Stop any falling motion
+
+			publish('player-interact-with-world');
 		},
 
 		// Callback for when player collides with platform
@@ -120,6 +137,12 @@ export default class ClassicGameScene extends Phaser.Scene {
 
 				triggerOperator(operator as Phaser.Types.Physics.Arcade.GameObjectWithBody, 'on');
 			}
+		},
+
+		onPlayerInteractWithWorld: () => {
+			this.players.forEach((player) => {
+				player.pointHandler.evaluate();
+			});
 		}
 	};
 

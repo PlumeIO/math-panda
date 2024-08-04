@@ -63,7 +63,6 @@ export default class Player {
 	}
 
 	update() {
-		this.pointHandler.evaluate();
 		this.handleWorldWrap();
 		this.handlePlayerMovement();
 

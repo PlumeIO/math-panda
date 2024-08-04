@@ -1,3 +1,4 @@
+import { publish } from '$lib/events';
 import type ClassicGameScene from '$lib/scenes/classic.scene';
 import { random } from '$lib/utils';
 
@@ -34,6 +35,7 @@ export default class NumberHandler {
 
 						ellipse.destroy();
 						text.destroy();
+						publish('player-interact-with-world');
 						this.sprites = this.sprites.filter((s) => s !== ellipse && s !== text);
 					}
 				},
