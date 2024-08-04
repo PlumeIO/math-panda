@@ -22,7 +22,7 @@ export const random = (arr: any[]) => arr[Math.floor(Math.random() * arr.length)
 
 export const playerConstructor = {
 	player1: (scene: ClassicGameScene) =>
-		new Player(scene, 28, 21, 'dude', new PointHandler(scene, [27.75, 21]), {
+		new Player(scene, 28, 21, 'dude', new PointHandler(scene, [28, 21]), {
 			up: scene.input.keyboard?.addKey(Phaser.Input.Keyboard.KeyCodes.UP)!,
 			left: scene.input.keyboard?.addKey(Phaser.Input.Keyboard.KeyCodes.LEFT)!,
 			down: scene.input.keyboard?.addKey(Phaser.Input.Keyboard.KeyCodes.DOWN)!,
@@ -30,7 +30,7 @@ export const playerConstructor = {
 		}),
 
 	player2: (scene: ClassicGameScene) =>
-		new Player(scene, 36, 21, 'dude', new PointHandler(scene, [35.75, 21]), {
+		new Player(scene, 36, 21, 'dude', new PointHandler(scene, [36, 21]), {
 			up: scene.input.keyboard?.addKey(Phaser.Input.Keyboard.KeyCodes.W)!,
 			left: scene.input.keyboard?.addKey(Phaser.Input.Keyboard.KeyCodes.A)!,
 			down: scene.input.keyboard?.addKey(Phaser.Input.Keyboard.KeyCodes.S)!,
@@ -38,7 +38,7 @@ export const playerConstructor = {
 		}),
 
 	player3: (scene: ClassicGameScene) =>
-		new Player(scene, 16, 16, 'dude', new PointHandler(scene, [15.75, 16]), {
+		new Player(scene, 16, 16, 'dude', new PointHandler(scene, [16, 16]), {
 			up: scene.input.keyboard?.addKey(Phaser.Input.Keyboard.KeyCodes.I)!,
 			left: scene.input.keyboard?.addKey(Phaser.Input.Keyboard.KeyCodes.J)!,
 			down: scene.input.keyboard?.addKey(Phaser.Input.Keyboard.KeyCodes.K)!,
@@ -46,7 +46,7 @@ export const playerConstructor = {
 		}),
 
 	player4: (scene: ClassicGameScene) =>
-		new Player(scene, 48, 16, 'dude', new PointHandler(scene, [47.75, 16]), {
+		new Player(scene, 48, 16, 'dude', new PointHandler(scene, [48, 16]), {
 			up: scene.input.keyboard?.addKey(Phaser.Input.Keyboard.KeyCodes.T)!,
 			left: scene.input.keyboard?.addKey(Phaser.Input.Keyboard.KeyCodes.F)!,
 			down: scene.input.keyboard?.addKey(Phaser.Input.Keyboard.KeyCodes.G)!,

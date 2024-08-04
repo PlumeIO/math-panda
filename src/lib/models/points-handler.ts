@@ -28,11 +28,14 @@ export default class PointHandler {
 
 	create() {
 		const { uw, uh } = this.scene;
-		this.text = this.scene.add.text(
-			this.position[0] * uw,
-			this.position[1] * uh,
-			String(this.picks[0])
-		);
+		this.text = this.scene.add
+			.text(this.position[0] * uw, this.position[1] * uh, String(this.picks[0]), {
+				fontStyle: 'bold',
+				fontFamily: 'Sans Serif',
+				fontSize: 16 * 1.5,
+				color: '#cfff70'
+			})
+			.setOrigin(0.5, 0.5);
 	}
 
 	evaluate = () => {
