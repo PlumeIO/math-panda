@@ -36,5 +36,12 @@
 </script>
 
 <!-- Menu button component and main scene container -->
-<MenuButton />
+<MenuButton
+	onPause={() => {
+		game.pause();
+	}}
+	onResume={() => {
+		game.resume();
+	}}
+/>
 <div id="main-scene"></div>
